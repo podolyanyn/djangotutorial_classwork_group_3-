@@ -1,0 +1,91 @@
+>>> r = Region(name = 'Ternopilska', main_city_name = 'Ternopil')
+>>> r.save()
+>>> r.district_set
+<django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager object at 0x000002014AE12090>
+>>> r.district_set.all()
+<QuerySet []>
+>>> r.district_set.create(name = 'Chortkivskuy', main_city_name = 'Chortkiv')
+<District: District:Chortkivskuy>
+>>> r.district_set.create(name = 'Pochayivskuy', main_city_name = 'Pochayiv')
+<District: District:Pochayivskuy>
+>>> r.district_set.all()
+<QuerySet [<District: District:Chortkivskuy>, <District: District:Pochayivskuy>]>
+>>> r.district_set.all()
+<QuerySet [<District: District:Chortkivskuy>, <District: District:Pochayivskuy>]>
+>>> quit()
+(.venv) PS C:\beetroot_academy\3_Group_2025.05.21\GitHub\djangotutorial_classwork_group_3-> py manage.py shell
+12 objects imported automatically (use -v 2 for details).
+
+Python 3.12.8 (tags/v3.12.8:2dc476b, Dec  3 2024, 19:30:04) [MSC v.1942 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> r = Region.objects.get(pk=1)
+>>> r
+<Region: Region:Ternopilska>
+>>> r.district_set.all()
+<QuerySet [<District: Chortkivskuy>, <District: Pochayivskuy>]>
+>>> quit()
+(.venv) PS C:\beetroot_academy\3_Group_2025.05.21\GitHub\djangotutorial_classwork_group_3-> py manage.py shell
+12 objects imported automatically (use -v 2 for details).
+
+Python 3.12.8 (tags/v3.12.8:2dc476b, Dec  3 2024, 19:30:04) [MSC v.1942 64 bit (AMD64)] on win32
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> d_1 = District.objects.get(pk=1)
+>>> d_2 = District.objects.get(pk=2)
+>>> d_1.settlement_set.all()
+<QuerySet []>
+>>> d_1.settlement_set.create(name='Borshchiv')
+<Settlement: Borshchiv>
+>>> d_2.settlement_set.create(name='Pidkamin')
+<Settlement: Pidkamin>
+>>> s = Settlement.objects.get(pk=1)
+>>> s
+<Settlement: Borshchiv>
+>>> s.district
+<District: Chortkivskuy>
+>>> s.street_set.all()
+<QuerySet []>
+>>> s.street_set.create(name ='S.Bandery')
+<Street: S.Bandery>
+>>> s.street_set.create(name ='Galyckogo')
+<Street: Galyckogo>
+>>> s.street_set.all()
+<QuerySet [<Street: S.Bandery>, <Street: Galyckogo>]>
+>>> s.streets.all()
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'Settlement' object has no attribute 'streets'. Did you mean: 'street_set'?
+>>> str = Street.objects.get(pk=1)
+>>> str
+<Street: S.Bandery>
+>>> str.settlements.all()
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'Street' object has no attribute 'settlements'. Did you mean: 'settlement'?
+>>> sett = Settlement.objects.get(pk=2)
+>>> sett
+<Settlement: Pidkamin>
+>>> str.settlement_set.add(sett)
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'Street' object has no attribute 'settlement_set'. Did you mean: 'settlement'?
+>>> str.settlement_set.all()
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'Street' object has no attribute 'settlement_set'. Did you mean: 'settlement'?
+>>> str.settlements.all()
+Traceback (most recent call last):
+  File "<console>", line 1, in <module>
+AttributeError: 'Street' object has no attribute 'settlements'. Did you mean: 'settlement'?
+>>> str.settlement.all()
+<QuerySet [<Settlement: Borshchiv>]>
+>>> str.settlement.add(sett)
+>>> str.settlement.all()
+<QuerySet [<Settlement: Borshchiv>, <Settlement: Pidkamin>]>
+>>> sett.street_set.all()
+<QuerySet [<Street: S.Bandery>]>
+>>> sett = Settlement.objects.get(pk=1)
+>>> sett.street_set.all()
+<QuerySet [<Street: S.Bandery>, <Street: Galyckogo>]>
+>>>
