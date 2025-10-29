@@ -6,8 +6,10 @@ from .models import Choice, Question
 from django.views import generic
 from .forms import QuestionForm
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class IndexView(generic.ListView):
+class IndexView(LoginRequiredMixin, generic.ListView):
     template_name = "polls/index.html"
     context_object_name = "latest_question_list"
 
@@ -61,6 +63,8 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
 
+@login_required
+@permission_required("polls.add_question")
 def new_question(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
