@@ -8,21 +8,28 @@ from .forms import QuestionForm
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+import random
 
-class IndexView(LoginRequiredMixin, generic.ListView):
-    template_name = "polls/index.html"
-    context_object_name = "latest_question_list"
+# class IndexView(LoginRequiredMixin, generic.ListView):
+#     template_name = "polls/index.html"
+#     context_object_name = "latest_question_list"
+#
+#     # def get_queryset(self):
+#     #     """Return the last five published questions."""
+#     #     return Question.objects.order_by("-pub_date")[:5]
+#
+#     def get_queryset(self):
+#         """
+#         Return the last five published questions (not including those set to be
+#         published in the future).
+#         """
+#         return Question.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:5]
 
-    # def get_queryset(self):
-    #     """Return the last five published questions."""
-    #     return Question.objects.order_by("-pub_date")[:5]
-
-    def get_queryset(self):
-        """
-        Return the last five published questions (not including those set to be
-        published in the future).
-        """
-        return Question.objects.filter(pub_date__lte=timezone.now()).order_by("-pub_date")[:5]
+# function for lesson 45 - experiments with async
+def index(request):
+    latest_question_list = Question.objects.order_by('?')[:5]
+    context = {"latest_question_list": latest_question_list}
+    return render(request, "polls/index.html", context)
 
 
 class DetailView(generic.DetailView):
@@ -63,8 +70,8 @@ def vote(request, question_id):
         # user hits the Back button.
         return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
 
-@login_required
-@permission_required("polls.add_question")
+# @login_required
+# @permission_required("polls.add_question")
 def new_question(request):
     # if this is a POST request we need to process the form data
     if request.method == "POST":
@@ -92,3 +99,53 @@ def new_question(request):
 
 def thanks(request):
     return HttpResponse('  THANKS !')
+
+
+def hello(request):
+    greetings = [
+        "hello, world",
+        "hi, universe",
+        "hey there, world",
+        "hello, folks",
+        "greetings, earthlings",
+        "salutations, world",
+        "yo, world",
+        "bonjour, le monde",
+        "hola, mundo",
+        "ciao, mondo",
+        "hallo, welt",
+        "こんにちは、世界",  # Japanese
+        "안녕하세요, 세계",  # Korean
+        "привіт, світе",
+        "добрий день, світ",
+        "γειά σου, κόσμε",  # Greek
+        "سلام دنیا",  # Persian
+        "שלום עולם",  # Hebrew
+        "नमस्ते दुनिया",  # Hindi
+        "olá, mundo",
+        "hello, planet",
+        "hey, all",
+        "hiya, world",
+        "howdy, world",
+        "welcome, world",
+        "peace, world",
+        "what's up, world?",
+        "top of the morning, world",
+        "cheerio, world",
+        "ahoj, světe"  # Czech
+    ]
+    return HttpResponse(random.choice(greetings))
+
+def request_to_nbu(request):
+    import json
+    from datetime import date, timedelta, datetime
+    import requests
+    import time
+
+    start = time.time()
+    current_day = date.today()
+    result = []
+    url = f'https://bank.gov.ua/NBU_Exchange/exchange?json&date={(current_day - timedelta(days=random.randint(1,30))).strftime("%d.%m.%Y")}'
+    response = requests.get(url)
+    result += response.json()
+    return HttpResponse(result)
