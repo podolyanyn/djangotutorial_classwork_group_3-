@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 import random
+from asgiref.sync import sync_to_async
 
 # class IndexView(LoginRequiredMixin, generic.ListView):
 #     template_name = "polls/index.html"
@@ -100,7 +101,7 @@ def new_question(request):
 def thanks(request):
     return HttpResponse('  THANKS !')
 
-
+@sync_to_async
 def hello(request):
     greetings = [
         "hello, world",
